@@ -4,6 +4,7 @@ import os.path
 
 def start():
     answer_handle()
+    print('perfect!')
 
 
 def json_handle(path: str):
@@ -23,10 +24,20 @@ def answer_handle():
         temp_answer = temp_answer['submission']['submissionDetails']
         if not temp_answer: continue
         for answer in temp_answer:
-            answer_bank[answer['problemSetProblemId']] = answer['trueOrFalseSubmissionDetail']['answer']
+            answer_bank[answer['problemSetProblemId']] = get_answer(answer)
+    # answer['trueOrFalseSubmissionDetail']['answer'] or answer[
+    #     'fillInTheBlankSubmissionDetail']['answer'] or answer['fillInTheBlankSubmissionDetail']['answer']
     with open("./answer.json", mode='w', encoding='utf-8') as f:
         f.write(json.dumps(answer_bank))
     question_handle(answer_bank)
+
+
+def get_answer(item: dict):
+    for i in item:
+        if isinstance(item[i], dict):
+            if not item[i].get('answer'):
+                return item[i].get('answers')
+            else:return item[i].get('answer')
 
 
 def question_handle(answer_bank):
